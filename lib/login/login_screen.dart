@@ -1,14 +1,21 @@
-import 'package:flutter/cupertino.dart';
+
+import 'package:bestiptv/providers/home_provider.dart';
+import 'package:bestiptv/providers/login_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
-class Login extends StatefulWidget {
+import '../home/home.dart';
+import '../tela_transição.dart';
+
+
+class Login extends ConsumerStatefulWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  ConsumerState<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends ConsumerState<Login> {
 
   TextEditingController passController = TextEditingController();
   TextEditingController loginController = TextEditingController();
@@ -16,6 +23,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final loginState = ref.read(loginProvider);
+    final login = ref.watch(loginProvider.notifier);
+
     return Scaffold(
         backgroundColor: Colors.grey,
         body: SingleChildScrollView(
@@ -65,7 +75,7 @@ class _LoginState extends State<Login> {
                         child: Column(
                           children: <Widget>[
                             Container(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8.0),
                               decoration: const BoxDecoration(
                                   border: Border(
                                       bottom: BorderSide(color: Colors.grey))),
@@ -95,6 +105,15 @@ class _LoginState extends State<Login> {
                       const SizedBox(
                         height: 30,
                       ),
+                      GestureDetector(
+                        onTap: () async {
+                          loginState.user = loginController.text;
+                          loginState.pass = passController.text;
+                          await login.login();
+                          Navigator.of(context)
+                              .pushReplacement(MaterialPageRoute(builder: (context) => const Transition()));
+                        },
+                        child:
                       Container(
                         height: 50,
                         decoration: BoxDecoration(
@@ -111,6 +130,7 @@ class _LoginState extends State<Login> {
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
+                      ),
                       ),
                       const SizedBox(
                         height: 70,

@@ -1,25 +1,33 @@
 
+import '../../db/database.dart';
+
 class Data {
+  int? id;
   String? tvglogo;
   String? grouptitle;
   String? name;
   String? link;
 
-  Data({this.tvglogo, this.name, this.grouptitle, this.link});
+  Data({this.id, this.tvglogo, this.grouptitle, this.name, this.link});
 
-  factory Data.fromMap(Map<String, dynamic> map) => Data(
-    tvglogo: map["tvglogo"],
-    grouptitle: map['grouptitle'],
-    name: map['name'],
-    link: map['link'],
-  );
-
+  // converte um Canal em um Map
   Map<String, dynamic> toMap() {
     return {
-      "tvglogo": tvglogo,
-      "grouptitle": grouptitle,
-      "name": name,
-      "link": link
+      DatabaseProvider.columnTvgLogo: tvglogo,
+      DatabaseProvider.columnGroupTitle: grouptitle,
+      DatabaseProvider.columnName: name,
+      DatabaseProvider.columnLink: link,
     };
+  }
+
+  // converte um Map em um Canal
+  factory Data.fromMap(Map<String, dynamic> map) {
+    return Data(
+      id: map[DatabaseProvider.columnId],
+      tvglogo: map[DatabaseProvider.columnTvgLogo],
+      grouptitle: map[DatabaseProvider.columnGroupTitle],
+      name: map[DatabaseProvider.columnName],
+      link: map[DatabaseProvider.columnLink],
+    );
   }
 }
