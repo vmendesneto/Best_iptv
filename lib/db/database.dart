@@ -55,16 +55,18 @@ class DatabaseProvider {
   // insere um novo canal na tabela 'canais'
   Future<List<Data>> insertCanal(List<Data> lista) async {
     Database db = await instance.database;
+    var batch = db.batch();
     for (int i = 0; i < lista.length; i++) {
-      await db.insert(
-        table, lista[i].toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+      batch.insert(table, lista[i].toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
     }
+    await batch.commit();
     return lista;
   }
 
   // retorna todos os canais da tabela 'canais'
   Future<List<Data>> getAllCanais() async {
-    await close();
+    //await close();
     Database db = await instance.database;
     final List<Map<String, Object?>> queryResult =
     await db.query(table);

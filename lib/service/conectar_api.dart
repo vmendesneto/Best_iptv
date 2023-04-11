@@ -56,12 +56,8 @@ class Conectar {
       }
       //Salvou a lista com as informações em uma tabela
       //Salvando no Banco
-      //for (int i = 0; i < lista!.length; i++) {
-        if (lista != null) {
          await dbHelper.insertCanal(lista!);
-       // }
-      }
-      await home.getAllProjects();
+
   //  } else {
    //   return await home.getAllProjects();
   //  }
