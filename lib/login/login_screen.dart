@@ -1,4 +1,5 @@
 
+import 'package:bestiptv/login/controller/login_Controller.dart';
 import 'package:bestiptv/providers/home_provider.dart';
 import 'package:bestiptv/providers/login_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,8 +24,9 @@ class _LoginState extends ConsumerState<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final loginState = ref.read(loginProvider);
+    final loginState = ref.watch(loginProvider);
     final login = ref.watch(loginProvider.notifier);
+
 
     return Scaffold(
         backgroundColor: Colors.grey,
@@ -110,9 +112,9 @@ class _LoginState extends ConsumerState<Login> {
                           loginState.user = loginController.text;
                           loginState.pass = passController.text;
                           await login.login();
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(builder: (context) => const Transition()));
-                        },
+                          pressButton(context,ref);
+
+                         },
                         child:
                       Container(
                         height: 50,
@@ -144,7 +146,26 @@ class _LoginState extends ConsumerState<Login> {
         ));
   }
 }
-pressButton(){
-
-
+pressButton(BuildContext context, WidgetRef ref){
+  final loginState = ref.watch(loginProvider);
+  if(loginState.validation == true) {
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(
+        builder: (context) => const Transition()));
+  }else{
+    AlertDialog alerta = AlertDialog(
+      title: const Text("Não foi possivel fazer Login"),
+      content: Text("Erro: ${loginState.message!}"),
+      actions: [
+        ElevatedButton(onPressed: (){Navigator.pop(context);}, child: const Text("OK"))
+      ],
+    );
+    // exibe o dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alerta;
+      },
+    );
+  }
 }
