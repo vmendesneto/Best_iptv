@@ -14,14 +14,13 @@ class Conectar {
   List<Data>? lista;
   List? resposta;
 
-//Pegou o Html e transformou em uma lista com as informações
-  Future get(String user, String pass) async {
+//A response vem do login que verifica se a Url é valida
+  Future get(String user, String pass, Response response) async {
     // if (await dbHelper.database == null) {
     var tvglogo = RegExp(r'(?<=tvglogo:)(.*)(?= grouptitle)');
     var grouptitle = RegExp(r'(?<=grouptitle:)(.*)(?= name)');
     var name = RegExp(r'(?<=name:)(.*)(?=http)');
     var link = RegExp(r'(?<=http://pfsv)(.*)');
-    final response = await dio.get('http://cgold.me/$user/$pass');
     resposta = response.data.split('#EXTINF:-1 ');
     if (resposta![0] == "#EXTM3U\n") {
       resposta!.remove(resposta![0]);

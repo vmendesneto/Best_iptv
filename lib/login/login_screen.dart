@@ -1,12 +1,12 @@
 
-import 'package:bestiptv/login/controller/login_Controller.dart';
-import 'package:bestiptv/providers/home_provider.dart';
 import 'package:bestiptv/providers/login_provider.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
-import '../home/home.dart';
-import '../tela_transição.dart';
+import '../screens_global/transition_screen.dart';
+
+
 
 
 class Login extends ConsumerStatefulWidget {
@@ -20,8 +20,13 @@ class _LoginState extends ConsumerState<Login> {
 
   TextEditingController passController = TextEditingController();
   TextEditingController loginController = TextEditingController();
+  bool click = false;
 
-
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+  }
   @override
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginProvider);
@@ -29,7 +34,7 @@ class _LoginState extends ConsumerState<Login> {
 
 
     return Scaffold(
-        backgroundColor: Colors.grey,
+        //backgroundColor: Colors.grey,
         body: SingleChildScrollView(
           child: Container(
             child: Column(
@@ -44,102 +49,107 @@ class _LoginState extends ConsumerState<Login> {
                     children: <Widget>[
                       Positioned(
                         child: Container(
+                          color: Colors.transparent,
                           margin: const EdgeInsets.only(top: 50),
-                          child: const Center(
-                            child: Text(
-                              "Login",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 100,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                          child:  Center(
+                            child:  Padding(
+                              padding:  const EdgeInsets.all(30.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                              color: Color.fromRGBO(143, 148, 251, .2),
+                                              blurRadius: 20.0,
+                                              offset: Offset(0, 10))
+                                        ]),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Container(
+                                          padding: const EdgeInsets.all(8.0),
+                                          width: 300,
+                                          decoration:  BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),color: Colors.redAccent),
+                                          child: TextField(
+                                            controller: loginController,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                hintText: "Login",
+                                                hintStyle:
+                                                TextStyle(color: Colors.grey[400])),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.all(8.0),
+                                          width: 300,
+                                          decoration:  BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),color: Colors.redAccent),
+                                          child: TextField(
+                                            controller: passController,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                hintText: "Password",
+                                                hintStyle:
+                                                TextStyle(color: Colors.grey[400])),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      loginState.user = loginController.text;
+                                      loginState.pass = passController.text;
+                                      setState(() {
+                                        click = true;
+                                      });
+                                      await login.login();
+                                      pressButton(context,ref);
+
+                                    },
+                                    child:
+                                    Container(
+                                      height: 50,
+                                      width: 300,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          gradient: const LinearGradient(colors: [
+                                            Color.fromRGBO(127,255,212, 1),
+                                            Color.fromRGBO(64,224,208,6),
+                                          ])),
+                                      child: Center(
+                                        child: click == false ?const Text(
+                                          "Enter",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ): const CircularProgressIndicator(color: Colors.yellow),
+                                      ),
+                                    ),
+                                  ),
+                                 // const SizedBox(
+                                 //   height: 70,
+                                 // ),
+                                ],
+                              ),
+                            )
                           ),
                         ),
                       )
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: Color.fromRGBO(143, 148, 251, .2),
-                                  blurRadius: 20.0,
-                                  offset: Offset(0, 10))
-                            ]),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              padding: const EdgeInsets.all(8.0),
-                              decoration: const BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(color: Colors.grey))),
-                              child: TextField(
-                                controller: loginController,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "Login",
-                                    hintStyle:
-                                        TextStyle(color: Colors.grey[400])),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextField(
-                                controller: passController,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "Password",
-                                    hintStyle:
-                                        TextStyle(color: Colors.grey[400])),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          loginState.user = loginController.text;
-                          loginState.pass = passController.text;
-                          await login.login();
-                          pressButton(context,ref);
 
-                         },
-                        child:
-                      Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: const LinearGradient(colors: [
-                              Color.fromRGBO(250,128,114, 1),
-                              Color.fromRGBO(255,0,0,6),
-                            ])),
-                        child: const Center(
-                          child: Text(
-                            "Enter",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                      ),
-                      const SizedBox(
-                        height: 70,
-                      ),
-                    ],
-                  ),
-                )
               ],
             ),
           ),
@@ -154,8 +164,8 @@ pressButton(BuildContext context, WidgetRef ref){
         builder: (context) => const Transition()));
   }else{
     AlertDialog alerta = AlertDialog(
-      title: const Text("Não foi possivel fazer Login"),
-      content: Text("Erro: ${loginState.message!}"),
+      title:  Text(loginState.message!),
+      //content: Text("Erro: ${loginState.message!}"),
       actions: [
         ElevatedButton(onPressed: (){Navigator.pop(context);}, child: const Text("OK"))
       ],

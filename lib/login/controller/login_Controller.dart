@@ -1,4 +1,4 @@
-import 'package:bestiptv/home/controller/home_Controller.dart';
+
 import 'package:dio/dio.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -17,37 +17,50 @@ class LoginController extends StateNotifier<loginState> {
 
   Conectar conectar = Conectar();
 
-
+Response? response;
 
   //SE URL EXISTE TROCA DE TELA
   Future login() async {
     String? user = state.user;
     String? pass = state.pass;
-    Response? response = null;
 
     if (user != null && pass != null) {
+      BaseOptions options = BaseOptions(
+        baseUrl: 'http://cgold.me/',
+        connectTimeout: 10*1000,
+        receiveTimeout: 25*1000,
+      );
+      Dio dio = Dio(options);
       try {
         response = await dio.get('http://cgold.me/$user/$pass');
-        if(response.statusCode == 200){
+        if(response!.statusCode == 200){
           String m = "OK";
           state = loginState(validation: true,pass: state.pass,user: state.user, message: m);
-          await conectar.get(state.user!, state.pass!);
+        //  await conectar.get(state.user!, state.pass!, response);
         }
       } on DioError catch (e) {
         if (e.response != null) {
-        //  print("Erro 404");
+        //  Usuario ou senha inválido
           String m = e.message.toString();
-          state = loginState(validation: false,pass: state.pass,user: state.user, message: m);
+          state = loginState(validation: false,pass: state.pass,user: state.user, message: "Usuario ou senha Inválido.");
          // print(e.message);
         } else {
+          //Sem Internet
           String m = e.message.toString();
-          state = loginState(validation: false,pass: state.pass,user: state.user,message: m);
+          state = loginState(validation: false,pass: state.pass,user: state.user,message: "Sem conexão com a Internet");
           //print(e.requestOptions);
           //print(e.message);
         }
       }
     } else {
       print('Usuario inválido no login Controller');
+    }
+  }
+  Future getLogin() async{
+    if(response != null && state.user != null && state.pass != null) {
+      await conectar.get(state.user!, state.pass!, response!);
+    }else{
+      print("Recebeu algo nulo no Login Controller getLogin()");
     }
   }
 }
