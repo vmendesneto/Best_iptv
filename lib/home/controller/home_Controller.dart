@@ -13,7 +13,7 @@ class HomeState {
   List<Data>? cameras;
   List<Data>? documentarios;
   List<Data>? shows;
-
+  List<String>? gruposCanais;
   HomeState({
       this.lista,
       this.canais,
@@ -23,7 +23,8 @@ class HomeState {
       this.cameras,
       this.filmes,
       this.radios,
-      this.shows});
+      this.shows,
+  this.gruposCanais});
 }
 
 class HomeController extends StateNotifier<HomeState> {
@@ -41,12 +42,18 @@ class HomeController extends StateNotifier<HomeState> {
     List<Data>? camera;
     List<Data>? documentario;
     List<Data>? show;
+    List<String> gCanais = [];
     List<Data>? listas = await dbHelper.getAllCanais();
 
     for(var i = 0;i < listas.length;i++){
       if (listas[i].grouptitle!.toLowerCase().contains("canais")) {
         if (canal != null) {
           canal.add(listas[i]);
+          var contain = gCanais.where((element) => element == listas[i].grouptitle.toString());
+          if (contain.isEmpty) {
+            gCanais.add(listas[i].grouptitle.toString());
+            gCanais.sort((a, b) => a.toLowerCase().toString().compareTo(b.toLowerCase().toString()));
+          }
         } else {
           canal= [listas[i]];
         }
@@ -102,7 +109,8 @@ class HomeController extends StateNotifier<HomeState> {
         }
       }
     }
-    state = HomeState(lista: listas, cameras: camera,canais: canal,filmes: filme,radios: radio,documentarios: documentario,outros: outro,shows: show,series: serie);
+    state = HomeState(lista: listas, cameras: camera,canais: canal,filmes: filme,radios: radio,documentarios: documentario,outros: outro,shows: show,series: serie,
+    gruposCanais: gCanais);
     //print(state.canais);
     //return listas;
   }

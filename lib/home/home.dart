@@ -15,20 +15,77 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-  //  final home = ref.watch(homeProvider.notifier);
     final homeState = ref.watch(homeProvider);
 
     return Scaffold(
         appBar: AppBar(),
-        body: Container(
+        body: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Container(
             width: 200,
+            height: double.infinity,
+            color: Colors.yellow,
             child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return Text(
-                  homeState.canais![index].name.toString(),
-                  style: const TextStyle(color: Colors.blue),
-                );
-              },
-            )));
+                itemCount: homeState.gruposCanais!.length,
+                itemBuilder: (BuildContext context, int i){
+              return GestureDetector(
+                onTap: (){},
+                child:
+                 Container(
+                  color: Colors.grey,
+                  child: Column(children: [
+                    Text(homeState.gruposCanais![i].toString()),
+                    Container(
+                      width: double.infinity,
+                      height: 2,
+                      color: Colors.red,
+                    )
+                  ],)
+                ),
+              );
+            }),
+          ),
+          Expanded(
+              child: Column(
+            children: [
+              Expanded(
+                  child: GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: homeState.canais!.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 5,
+                        crossAxisSpacing: 5,
+                        mainAxisSpacing: 2,
+                        mainAxisExtent: 200, // here set custom Height You Want
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                            child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                              Container(
+                                height: 120,
+                                color: Colors.red,
+                              ),
+                              Expanded(
+                                  child: Container(
+                                width: double.infinity,
+                                color: Colors.grey,
+                                child: Text(
+                                    homeState.canais![index].name.toString(),
+                                    style: const TextStyle(color: Colors.blue)),
+                              ))
+                            ]));
+                      })),
+              Expanded(
+                  child: Container(
+                height: 300,
+                color: Colors.green,
+                //child: const Text("test"),
+              )),
+            ],
+          ))
+        ]));
   }
 }

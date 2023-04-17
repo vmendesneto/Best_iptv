@@ -42,11 +42,17 @@ class _Transition extends ConsumerState<Transition> {
               future: home.getAllProjects(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return loading(puxando,salvando);
+                  return loading(puxando, salvando);
                 } else {
                   salvando = true;
-                  return const HomePage();
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Navigator.of(context)
+                        .pushReplacement(MaterialPageRoute(
+                        builder: (context) => const HomePage()));
+                  });
+                  //return const HomePage();
                 }
+                return Container();
               },
             );
           }
