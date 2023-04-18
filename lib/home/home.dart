@@ -2,7 +2,7 @@ import 'package:bestiptv/providers/home_provider.dart';
 import 'package:bestiptv/service/conectar_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'dart:async';
 import '../service/model/lista_model.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -16,6 +16,27 @@ class _HomePageState extends ConsumerState<HomePage> {
   Conectar conectar = Conectar();
   String group = '';
   List<Data> t = [];
+  late Timer _timer;
+  String _timeString = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _getCurrentTime());
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
+  }
+  void _getCurrentTime() {
+    var now = DateTime.now();
+    setState(() {
+      _timeString = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +44,36 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Escolher Canal"),
-          backgroundColor: Colors.amber,
+          title: Text(
+            _timeString,
+            style: const TextStyle(fontSize: 32,),
+          ),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromRGBO(127, 255, 212, 1),
+                  Color.fromRGBO(255, 0, 0, 6)
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
         ),
         body: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Container(
             width: 200,
             height: double.infinity,
-            color: Colors.black,
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: [
+              Color.fromRGBO(250, 128, 114, 1),
+              Color.fromRGBO(255, 0, 0, 6)
+            ])),
             child: ListView.separated(
                 separatorBuilder: (context, index) => const Divider(
-                  color: Colors.white,
-                ),
+                      color: Colors.white,
+                    ),
                 itemCount: homeState.gruposCanais!.length,
                 itemBuilder: (BuildContext context, int i) {
                   return GestureDetector(
@@ -46,35 +85,43 @@ class _HomePageState extends ConsumerState<HomePage> {
                       });
                     },
                     child: Container(
-                        height: 40,
-                        color: Colors.black,
-                        child:
-                            Center(child: Text(homeState.gruposCanais![i].toString(),textAlign: TextAlign.center, style: const TextStyle(color: Colors.white),)),
-                        ),
+                      height: 40,
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(colors: [
+                        Color.fromRGBO(250, 128, 114, 1),
+                        Color.fromRGBO(255, 0, 0, 6)
+                      ])),
+                      child: Center(
+                          child: Text(
+                        homeState.gruposCanais![i].toString(),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.white),
+                      )),
+                    ),
                   );
                 }),
           ),
           Expanded(
-              child: Column(
-            children: [
-              Expanded(
-                child: group != '' ? _filtro(context, ref, t) : Container(),
-              ),
-              Expanded(
-                  child: Container(
-                height: 300,
-                color: Colors.green,
-                //child: const Text("test"),
-              )),
-            ],
-          ))
+              child: Container(
+                  decoration: const BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                    Color.fromRGBO(114, 114, 114, 6),
+                    Color.fromRGBO(51, 51, 51, 1),
+                  ])),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: group != ''
+                            ? _filtro(context, ref, t)
+                            : const Center(child: Text("Selecione uma Categoria", style: TextStyle(color: Colors.white,fontSize: 35.0),),)),
+                    ],
+                  )))
         ]));
   }
 }
 
 Widget _filtro(BuildContext context, WidgetRef ref, List<Data> t) {
-  final homeState = ref.watch(homeProvider);
-  print("tamanho de t : ${t.length}");
+
   return GridView.builder(
       shrinkWrap: true,
       itemCount: t.length,
@@ -82,25 +129,57 @@ Widget _filtro(BuildContext context, WidgetRef ref, List<Data> t) {
         crossAxisCount: 5,
         crossAxisSpacing: 5,
         mainAxisSpacing: 2,
-        mainAxisExtent: 200, // here set custom Height You Want
+        mainAxisExtent: 170, // here set custom Height You Want
       ),
       itemBuilder: (BuildContext context, int index) {
         return Card(
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-              Container(
-                height: 120,
-                color: Colors.red,
-              ),
-              Expanded(
-                  child: Container(
-                width: double.infinity,
-                color: Colors.grey,
-                child: Text(t[index].name.toString(),
-                    style: const TextStyle(color: Colors.blue)),
-              ))
-            ]));
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color.fromRGBO(127, 255, 212, 1),
+                      Color.fromRGBO(64, 224, 208, 6),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        height: 120,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            gradient: const LinearGradient(colors: [
+                              Color.fromRGBO(127, 255, 212, 1),
+                              Color.fromRGBO(64, 224, 208, 6),
+                            ])),
+                        child: t[index].tvglogo.toString().contains('http')
+                            ? Image.network(t[index].tvglogo.toString(),
+                                fit: BoxFit.fill)
+                            : Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    gradient: const LinearGradient(colors: [
+                                      Color.fromRGBO(127, 255, 212, 1),
+                                      Color.fromRGBO(64, 224, 208, 6),
+                                    ])),
+                              ),
+                      ),
+                      Expanded(
+                          child: Container(
+                        width: double.infinity,
+                        color: Colors.redAccent,
+                        child: Center(
+                            child: Text(t[index].name.toString(),
+                                style: const TextStyle(color: Colors.white),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2)),
+                      ))
+                    ])));
       });
 }
