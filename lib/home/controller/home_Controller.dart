@@ -14,6 +14,7 @@ class HomeState {
   List<Data>? documentarios;
   List<Data>? shows;
   List<String>? gruposCanais;
+  List<Data>? filtrado;
   HomeState({
       this.lista,
       this.canais,
@@ -24,7 +25,8 @@ class HomeState {
       this.filmes,
       this.radios,
       this.shows,
-  this.gruposCanais});
+  this.gruposCanais,
+  this.filtrado});
 }
 
 class HomeController extends StateNotifier<HomeState> {
@@ -110,8 +112,15 @@ class HomeController extends StateNotifier<HomeState> {
       }
     }
     state = HomeState(lista: listas, cameras: camera,canais: canal,filmes: filme,radios: radio,documentarios: documentario,outros: outro,shows: show,series: serie,
-    gruposCanais: gCanais);
+    gruposCanais: gCanais,filtrado: state.filtrado);
     //print(state.canais);
     //return listas;
+  }
+  buscarCanalGrupo(String grupo) async {
+    List<Data>? listas = await dbHelper.getAllGroup(grupo);
+    state = HomeState(lista: state.lista, cameras: state.cameras,canais: state.canais,filmes: state.filmes,radios: state.radios,documentarios: state.documentarios,
+        outros: state.outros,shows: state.shows,series: state.series,
+        gruposCanais: state.gruposCanais, filtrado: listas);
+    return listas;
   }
 }

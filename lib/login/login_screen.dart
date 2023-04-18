@@ -22,7 +22,7 @@ class _LoginState extends ConsumerState<Login> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
   }
 
   @override

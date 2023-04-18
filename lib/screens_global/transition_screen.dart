@@ -21,7 +21,7 @@ class _Transition extends ConsumerState<Transition> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
   }
 
   @override

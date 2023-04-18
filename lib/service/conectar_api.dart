@@ -54,6 +54,10 @@ class Conectar {
     }
     //Salvou a lista com as informações em uma tabela
     //Salvando no Banco
-    await dbHelper.insertCanal(lista!);
+    final lengthIndex = await dbHelper.getTotalRows();
+    print(lengthIndex);
+    if (lengthIndex <= 1) {
+      await dbHelper.insertCanal(lista!);
+    }
   }
 }

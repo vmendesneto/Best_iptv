@@ -10,7 +10,7 @@ class DatabaseProvider {
 
   static final table = 'canais';
 
-  static final columnId = '_id';
+  //static final columnId = '_id';
   static final columnTvgLogo = 'tvglogo';
   static final columnGroupTitle = 'grouptitle';
   static final columnName = 'name';
@@ -43,7 +43,7 @@ class DatabaseProvider {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
           CREATE TABLE $table (
-            $columnId INTEGER PRIMARY KEY,
+            
             $columnTvgLogo TEXT,
             $columnGroupTitle TEXT,
             $columnName TEXT,
@@ -64,6 +64,7 @@ class DatabaseProvider {
     return lista;
   }
 
+
   // retorna todos os canais da tabela 'canais'
   Future<List<Data>> getAllCanais() async {
     //await close();
@@ -72,6 +73,28 @@ class DatabaseProvider {
     await db.query(table);
     return queryResult.map((e) => Data.fromMap(e)).toList();
   }
+
+  Future<List<Data>> getAllGroup(String group) async {
+    Database db = await instance.database;
+    List<String> columnsToSelect = [
+      //DatabaseProvider.columnId,
+      DatabaseProvider.columnTvgLogo,
+      DatabaseProvider.columnName,
+      DatabaseProvider.columnGroupTitle,
+      DatabaseProvider.columnLink,
+    ];
+    String whereString = '${DatabaseProvider.columnGroupTitle} = ?';
+    List<dynamic> whereArguments = [group];
+    final List<Map<String,Object?>> queryResult = await db.query(table,columns: columnsToSelect,where: whereString,whereArgs: whereArguments);
+    return queryResult.map((e) => Data.fromMap(e)).toList();
+  }
+
+  Future<int> getTotalRows() async {
+    Database db = await instance.database;
+    int? count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $table'));
+    return count!;
+  }
+
 }
 
 
