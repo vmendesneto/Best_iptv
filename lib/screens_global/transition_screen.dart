@@ -6,7 +6,6 @@ import 'package:bestiptv/providers/home_provider.dart';
 
 import '../home/home.dart';
 
-
 class Transition extends ConsumerStatefulWidget {
   const Transition({Key? key}) : super(key: key);
 
@@ -35,7 +34,7 @@ class _Transition extends ConsumerState<Transition> {
         future: login.getLogin(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return loading(puxando,salvando);
+            return loading(puxando, salvando);
           } else {
             puxando = true;
             return FutureBuilder(
@@ -46,8 +45,7 @@ class _Transition extends ConsumerState<Transition> {
                 } else {
                   salvando = true;
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    Navigator.of(context)
-                        .pushReplacement(MaterialPageRoute(
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => const HomePage()));
                   });
                   //return const HomePage();
@@ -63,53 +61,69 @@ class _Transition extends ConsumerState<Transition> {
 }
 
 Widget loading(bool p, bool s) {
-  return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-     Container(
-      height: 80,
-      width: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        gradient: p == false ? const LinearGradient(colors: [
-            Color.fromRGBO(250,128,114, 1),
-        Color.fromRGBO(255,0,0,6)]): const LinearGradient(colors: [
-          Color.fromRGBO(127,255,212, 1),
-          Color.fromRGBO(64,224,208,6),])),
-      child: Center(child: Column(children: [
-        const Center(child: Text("CANAIS")),
-        Center(child: Text(p == false ? "Carregando" : "Sucesso")),
-      ],))
-    ),
-        Container(
-            height: 80,
-            width: 150,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient:s == false ? const LinearGradient(colors: [
-                  Color.fromRGBO(250,128,114, 1),
-                  Color.fromRGBO(255,0,0,6)]): const LinearGradient(colors: [
-                  Color.fromRGBO(127,255,212, 1),
-                  Color.fromRGBO(64,224,208,6),])),
-            child: Center(child:Column(children: [
-              const Center(child: Text("Filmes e Series")),
-              Center(child: Text(s == false ? "Carregando" : "Sucesso")),
-            ],))
-        ),
-        Container(
-            height: 80,
-            width: 150,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: s == false ? const LinearGradient(colors: [
-                  Color.fromRGBO(250,128,114, 1),
-                  Color.fromRGBO(255,0,0,6)]): const LinearGradient(colors: [
-                  Color.fromRGBO(127,255,212, 1),
-                  Color.fromRGBO(64,224,208,6),])),
-            child: Center(child:Column(children: [
-              const Center(child: Text("EPG")),
-              Center(child: Text(s == false ? "Carregando" : "Sucesso")),
-            ],))
-        ),
+  return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+    Container(
+        height: 80,
+        width: 150,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            gradient: p == false
+                ? const LinearGradient(colors: [
+                    Color.fromRGBO(250, 128, 114, 1),
+                    Color.fromRGBO(255, 0, 0, 6)
+                  ])
+                : const LinearGradient(colors: [
+                    Color.fromRGBO(127, 255, 212, 1),
+                    Color.fromRGBO(64, 224, 208, 6),
+                  ])),
+        child: Center(
+            child: Column(
+          children: [
+            const Center(child: Text("CANAIS")),
+            Center(child: Text(p == false ? "Carregando" : "Sucesso")),
+          ],
+        ))),
+    Container(
+        height: 80,
+        width: 150,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            gradient: s == false
+                ? const LinearGradient(colors: [
+                    Color.fromRGBO(250, 128, 114, 1),
+                    Color.fromRGBO(255, 0, 0, 6)
+                  ])
+                : const LinearGradient(colors: [
+                    Color.fromRGBO(127, 255, 212, 1),
+                    Color.fromRGBO(64, 224, 208, 6),
+                  ])),
+        child: Center(
+            child: Column(
+          children: [
+            const Center(child: Text("Filmes e Series")),
+            Center(child: Text(s == false ? "Carregando" : "Sucesso")),
+          ],
+        ))),
+    Container(
+        height: 80,
+        width: 150,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            gradient: s == false
+                ? const LinearGradient(colors: [
+                    Color.fromRGBO(250, 128, 114, 1),
+                    Color.fromRGBO(255, 0, 0, 6)
+                  ])
+                : const LinearGradient(colors: [
+                    Color.fromRGBO(127, 255, 212, 1),
+                    Color.fromRGBO(64, 224, 208, 6),
+                  ])),
+        child: Center(
+            child: Column(
+          children: [
+            const Center(child: Text("EPG")),
+            Center(child: Text(s == false ? "Carregando" : "Sucesso")),
+          ],
+        ))),
   ]);
 }

@@ -22,13 +22,19 @@ class _HomePageState extends ConsumerState<HomePage> {
     final homeState = ref.watch(homeProvider);
 
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: const Text("Escolher Canal"),
+          backgroundColor: Colors.amber,
+        ),
         body: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Container(
             width: 200,
             height: double.infinity,
-            color: Colors.yellow,
-            child: ListView.builder(
+            color: Colors.black,
+            child: ListView.separated(
+                separatorBuilder: (context, index) => const Divider(
+                  color: Colors.white,
+                ),
                 itemCount: homeState.gruposCanais!.length,
                 itemBuilder: (BuildContext context, int i) {
                   return GestureDetector(
@@ -40,17 +46,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                       });
                     },
                     child: Container(
-                        color: Colors.grey,
-                        child: Column(
-                          children: [
-                            Text(homeState.gruposCanais![i].toString()),
-                            Container(
-                              width: double.infinity,
-                              height: 2,
-                              color: Colors.red,
-                            )
-                          ],
-                        )),
+                        height: 40,
+                        color: Colors.black,
+                        child:
+                            Center(child: Text(homeState.gruposCanais![i].toString(),textAlign: TextAlign.center, style: const TextStyle(color: Colors.white),)),
+                        ),
                   );
                 }),
           ),
@@ -58,9 +58,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               child: Column(
             children: [
               Expanded(
-                child: group != '' ?
-                _filtro(context, ref,t) :
-                Container(),
+                child: group != '' ? _filtro(context, ref, t) : Container(),
               ),
               Expanded(
                   child: Container(

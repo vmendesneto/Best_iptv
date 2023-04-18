@@ -14,19 +14,19 @@ class HomeState {
   List<Data>? documentarios;
   List<Data>? shows;
   List<String>? gruposCanais;
-  List<Data>? filtrado;
+
   HomeState({
-      this.lista,
-      this.canais,
-      this.documentarios,
-      this.series,
-      this.outros,
-      this.cameras,
-      this.filmes,
-      this.radios,
-      this.shows,
-  this.gruposCanais,
-  this.filtrado});
+    this.lista,
+    this.canais,
+    this.documentarios,
+    this.series,
+    this.outros,
+    this.cameras,
+    this.filmes,
+    this.radios,
+    this.shows,
+    this.gruposCanais,
+  });
 }
 
 class HomeController extends StateNotifier<HomeState> {
@@ -34,8 +34,7 @@ class HomeController extends StateNotifier<HomeState> {
 
   final dbHelper = DatabaseProvider.instance;
 
-
-   getAllProjects() async {
+  getAllProjects() async {
     List<Data>? canal;
     List<Data>? filme;
     List<Data>? serie;
@@ -47,17 +46,21 @@ class HomeController extends StateNotifier<HomeState> {
     List<String> gCanais = [];
     List<Data>? listas = await dbHelper.getAllCanais();
 
-    for(var i = 0;i < listas.length;i++){
+    for (var i = 0; i < listas.length; i++) {
       if (listas[i].grouptitle!.toLowerCase().contains("canais")) {
         if (canal != null) {
           canal.add(listas[i]);
-          var contain = gCanais.where((element) => element == listas[i].grouptitle.toString());
+          var contain = gCanais
+              .where((element) => element == listas[i].grouptitle.toString());
           if (contain.isEmpty) {
             gCanais.add(listas[i].grouptitle.toString());
-            gCanais.sort((a, b) => a.toLowerCase().toString().compareTo(b.toLowerCase().toString()));
+            gCanais.sort((a, b) => a
+                .toLowerCase()
+                .toString()
+                .compareTo(b.toLowerCase().toString()));
           }
         } else {
-          canal= [listas[i]];
+          canal = [listas[i]];
         }
       } else if (listas[i].grouptitle!.toLowerCase().contains("filmes")) {
         if (filme != null) {
@@ -80,7 +83,6 @@ class HomeController extends StateNotifier<HomeState> {
       } else if (listas[i].grouptitle!.toLowerCase().contains("document")) {
         if (documentario != null) {
           documentario.add(listas[i]);
-
         } else {
           documentario = [listas[i]];
         }
@@ -102,8 +104,7 @@ class HomeController extends StateNotifier<HomeState> {
         } else {
           serie = [listas[i]];
         }
-      }
-      else {
+      } else {
         if (outro != null) {
           outro.add(listas[i]);
         } else {
@@ -111,16 +112,34 @@ class HomeController extends StateNotifier<HomeState> {
         }
       }
     }
-    state = HomeState(lista: listas, cameras: camera,canais: canal,filmes: filme,radios: radio,documentarios: documentario,outros: outro,shows: show,series: serie,
-    gruposCanais: gCanais,filtrado: state.filtrado);
+    state = HomeState(
+        lista: listas,
+        cameras: camera,
+        canais: canal,
+        filmes: filme,
+        radios: radio,
+        documentarios: documentario,
+        outros: outro,
+        shows: show,
+        series: serie,
+        gruposCanais: gCanais);
     //print(state.canais);
     //return listas;
   }
+
   buscarCanalGrupo(String grupo) async {
     List<Data>? listas = await dbHelper.getAllGroup(grupo);
-    state = HomeState(lista: state.lista, cameras: state.cameras,canais: state.canais,filmes: state.filmes,radios: state.radios,documentarios: state.documentarios,
-        outros: state.outros,shows: state.shows,series: state.series,
-        gruposCanais: state.gruposCanais, filtrado: listas);
+    state = HomeState(
+        lista: state.lista,
+        cameras: state.cameras,
+        canais: state.canais,
+        filmes: state.filmes,
+        radios: state.radios,
+        documentarios: state.documentarios,
+        outros: state.outros,
+        shows: state.shows,
+        series: state.series,
+        gruposCanais: state.gruposCanais);
     return listas;
   }
 }

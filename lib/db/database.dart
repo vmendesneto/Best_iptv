@@ -1,7 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-
 import '../service/model/lista_model.dart';
 
 class DatabaseProvider {
@@ -18,10 +17,13 @@ class DatabaseProvider {
 
   // torna esta classe singleton
   DatabaseProvider._privateConstructor();
-  static final DatabaseProvider instance = DatabaseProvider._privateConstructor();
+
+  static final DatabaseProvider instance =
+      DatabaseProvider._privateConstructor();
 
   // tem somente uma referência ao banco de dados
   static Database? _database;
+
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
@@ -33,8 +35,7 @@ class DatabaseProvider {
     String path = await getDatabasesPath();
     String fullPath = join(path, _databaseName);
     return await openDatabase(fullPath,
-        version: _databaseVersion,
-        onCreate: _onCreate);
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
   Future close() async => _database!.close();
@@ -42,8 +43,7 @@ class DatabaseProvider {
   // cria a tabela 'canais'
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
-          CREATE TABLE $table (
-            
+          CREATE TABLE $table (           
             $columnTvgLogo TEXT,
             $columnGroupTitle TEXT,
             $columnName TEXT,
@@ -64,13 +64,11 @@ class DatabaseProvider {
     return lista;
   }
 
-
   // retorna todos os canais da tabela 'canais'
   Future<List<Data>> getAllCanais() async {
     //await close();
     Database db = await instance.database;
-    final List<Map<String, Object?>> queryResult =
-    await db.query(table);
+    final List<Map<String, Object?>> queryResult = await db.query(table);
     return queryResult.map((e) => Data.fromMap(e)).toList();
   }
 
@@ -85,20 +83,17 @@ class DatabaseProvider {
     ];
     String whereString = '${DatabaseProvider.columnGroupTitle} = ?';
     List<dynamic> whereArguments = [group];
-    final List<Map<String,Object?>> queryResult = await db.query(table,columns: columnsToSelect,where: whereString,whereArgs: whereArguments);
+    final List<Map<String, Object?>> queryResult = await db.query(table,
+        columns: columnsToSelect,
+        where: whereString,
+        whereArgs: whereArguments);
     return queryResult.map((e) => Data.fromMap(e)).toList();
   }
 
   Future<int> getTotalRows() async {
     Database db = await instance.database;
-    int? count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $table'));
+    int? count =
+        Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $table'));
     return count!;
   }
-
 }
-
-
-
-
-
-
