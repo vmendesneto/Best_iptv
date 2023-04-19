@@ -1,9 +1,9 @@
-import 'package:bestiptv/providers/home_provider.dart';
-import 'package:bestiptv/service/conectar_api.dart';
+import 'package:bestiptv/home/LiveTv/liveTv_screen.dart';
+import 'package:bestiptv/home/Movies/movies_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:async';
-import '../service/model/lista_model.dart';
+
+import '../login/login_screen.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,173 +13,185 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  Conectar conectar = Conectar();
-  String group = '';
-  List<Data> t = [];
-  late Timer _timer;
-  String _timeString = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _getCurrentTime());
-
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer.cancel();
-  }
-  void _getCurrentTime() {
-    var now = DateTime.now();
-    setState(() {
-      _timeString = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final homeState = ref.watch(homeProvider);
-
     return Scaffold(
         appBar: AppBar(
-          title: Text(
-            _timeString,
-            style: const TextStyle(fontSize: 32,),
-          ),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromRGBO(127, 255, 212, 1),
-                  Color.fromRGBO(255, 0, 0, 6)
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
+                gradient: LinearGradient(colors: [
+              Color.fromRGBO(114, 114, 114, 6),
+              Color.fromRGBO(51, 51, 51, 1),
+            ])),
           ),
+          actions: <Widget>[
+            IconButton(
+              icon: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.account_box_sharp,
+                      color: Color.fromRGBO(255, 0, 0, 1),
+                      size: 28,
+                    ),
+                    Text('Sair',
+                        style: TextStyle(
+                          fontSize: 8,
+                          color: Color.fromRGBO(255, 0, 0, 1),
+                        ))
+                  ]),
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => const Login()),
+                    (Route<dynamic> route) => false);
+              },
+            )
+          ],
         ),
-        body: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-            width: 200,
-            height: double.infinity,
+        body: Container(
             decoration: const BoxDecoration(
                 gradient: LinearGradient(colors: [
-              Color.fromRGBO(250, 128, 114, 1),
-              Color.fromRGBO(255, 0, 0, 6)
+              Color.fromRGBO(114, 114, 114, 6),
+              Color.fromRGBO(51, 51, 51, 1),
             ])),
-            child: ListView.separated(
-                separatorBuilder: (context, index) => const Divider(
-                      color: Colors.white,
-                    ),
-                itemCount: homeState.gruposCanais!.length,
-                itemBuilder: (BuildContext context, int i) {
-                  return GestureDetector(
-                    onTap: () async {
-                      t = await home.buscarCanalGrupo(
-                          homeState.gruposCanais![i].toString());
-                      setState(() {
-                        group = homeState.gruposCanais![i].toString();
-                      });
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const LiveTvPage()));
                     },
                     child: Container(
-                      height: 40,
-                      decoration: const BoxDecoration(
-                          gradient: LinearGradient(colors: [
-                        Color.fromRGBO(250, 128, 114, 1),
-                        Color.fromRGBO(255, 0, 0, 6)
-                      ])),
-                      child: Center(
-                          child: Text(
-                        homeState.gruposCanais![i].toString(),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.white),
-                      )),
-                    ),
-                  );
-                }),
-          ),
-          Expanded(
-              child: Container(
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                    Color.fromRGBO(114, 114, 114, 6),
-                    Color.fromRGBO(51, 51, 51, 1),
-                  ])),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: group != ''
-                            ? _filtro(context, ref, t)
-                            : const Center(child: Text("Selecione uma Categoria", style: TextStyle(color: Colors.white,fontSize: 35.0),),)),
-                    ],
-                  )))
-        ]));
-  }
-}
-
-Widget _filtro(BuildContext context, WidgetRef ref, List<Data> t) {
-
-  return GridView.builder(
-      shrinkWrap: true,
-      itemCount: t.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 5,
-        crossAxisSpacing: 5,
-        mainAxisSpacing: 2,
-        mainAxisExtent: 170, // here set custom Height You Want
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        return Card(
-            child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromRGBO(127, 255, 212, 1),
-                      Color.fromRGBO(64, 224, 208, 6),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        height: 120,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: const LinearGradient(colors: [
-                              Color.fromRGBO(127, 255, 212, 1),
-                              Color.fromRGBO(64, 224, 208, 6),
-                            ])),
-                        child: t[index].tvglogo.toString().contains('http')
-                            ? Image.network(t[index].tvglogo.toString(),
-                                fit: BoxFit.fill)
-                            : Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    gradient: const LinearGradient(colors: [
-                                      Color.fromRGBO(127, 255, 212, 1),
-                                      Color.fromRGBO(64, 224, 208, 6),
-                                    ])),
-                              ),
+                      height: 150,
+                      width: 150,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(255, 0, 0, 1),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(10.0),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color.fromRGBO(255, 0, 0, 1),
+                              Color.fromRGBO(127, 255, 212, 6)
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 2.0,
+                                offset: Offset(2.0, 2.0))
+                          ]),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.live_tv,
+                            size: 90,
+                          ),
+                          Text(
+                            "Tv",
+                            style: TextStyle(fontSize: 30),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                          child: Container(
-                        width: double.infinity,
-                        color: Colors.redAccent,
-                        child: Center(
-                            child: Text(t[index].name.toString(),
-                                style: const TextStyle(color: Colors.white),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2)),
-                      ))
-                    ])));
-      });
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const MoviesPage()));
+                    },
+                    child: Container(
+                      height: 150,
+                      width: 150,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(255, 0, 0, 1),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(10.0),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color.fromRGBO(255, 0, 0, 1),
+                              Color.fromRGBO(127, 255, 212, 6)
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 2.0,
+                                offset: Offset(2.0, 2.0))
+                          ]),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.local_movies_outlined,
+                            size: 90,
+                          ),
+                          Text(
+                            "Filmes",
+                            style: TextStyle(fontSize: 30),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      print('Series linha 114');
+                    },
+                    child: Container(
+                      height: 150,
+                      width: 150,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(255, 0, 0, 1),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(10.0),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color.fromRGBO(255, 0, 0, 1),
+                              Color.fromRGBO(127, 255, 212, 6)
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 2.0,
+                                offset: Offset(2.0, 2.0))
+                          ]),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.ondemand_video_outlined,
+                            size: 90,
+                          ),
+                          Text(
+                            "Series",
+                            style: TextStyle(fontSize: 30),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ])));
+  }
 }

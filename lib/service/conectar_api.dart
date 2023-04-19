@@ -1,6 +1,5 @@
 import 'package:bestiptv/home/controller/home_Controller.dart';
 import 'package:dio/dio.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../db/database.dart';
 import 'model/lista_model.dart';
@@ -28,7 +27,7 @@ class Conectar {
     for (int i = 0; i < resposta!.length; i++) {
       listaBruta.add(resposta![i]
           .replaceAll("=", ":")
-          .replaceAll(",", " name:")
+          .replaceFirst(",", " name:")
           .replaceAll("-", "")
           .replaceAll("\"", "")
           .replaceAll("\n", "")

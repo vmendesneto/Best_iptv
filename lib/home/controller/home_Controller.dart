@@ -1,4 +1,5 @@
 import 'package:bestiptv/db/database.dart';
+import 'package:bestiptv/home/LiveTv/liveTv_controller.dart';
 import 'package:riverpod/riverpod.dart';
 
 import '../../service/model/lista_model.dart';
@@ -14,6 +15,7 @@ class HomeState {
   List<Data>? documentarios;
   List<Data>? shows;
   List<String>? gruposCanais;
+  List<String>? gruposFilmes;
 
   HomeState({
     this.lista,
@@ -26,6 +28,7 @@ class HomeState {
     this.radios,
     this.shows,
     this.gruposCanais,
+    this.gruposFilmes,
   });
 }
 
@@ -33,6 +36,7 @@ class HomeController extends StateNotifier<HomeState> {
   HomeController([HomeState? state]) : super(HomeState());
 
   final dbHelper = DatabaseProvider.instance;
+  LiveTvController livetv = LiveTvController();
 
   getAllProjects() async {
     List<Data>? canal;
@@ -44,6 +48,7 @@ class HomeController extends StateNotifier<HomeState> {
     List<Data>? documentario;
     List<Data>? show;
     List<String> gCanais = [];
+    List<String> gFilmes = [];
     List<Data>? listas = await dbHelper.getAllCanais();
 
     for (var i = 0; i < listas.length; i++) {
@@ -65,6 +70,15 @@ class HomeController extends StateNotifier<HomeState> {
       } else if (listas[i].grouptitle!.toLowerCase().contains("filmes")) {
         if (filme != null) {
           filme.add(listas[i]);
+          var contain = gFilmes
+              .where((element) => element == listas[i].grouptitle.toString());
+          if (contain.isEmpty) {
+            gFilmes.add(listas[i].grouptitle.toString());
+            gFilmes.sort((a, b) => a
+                .toLowerCase()
+                .toString()
+                .compareTo(b.toLowerCase().toString()));
+          }
         } else {
           filme = [listas[i]];
         }
@@ -122,7 +136,8 @@ class HomeController extends StateNotifier<HomeState> {
         outros: outro,
         shows: show,
         series: serie,
-        gruposCanais: gCanais);
+        gruposCanais: gCanais,
+        gruposFilmes: gFilmes);
     //print(state.canais);
     //return listas;
   }
@@ -139,7 +154,8 @@ class HomeController extends StateNotifier<HomeState> {
         outros: state.outros,
         shows: state.shows,
         series: state.series,
-        gruposCanais: state.gruposCanais);
+        gruposCanais: state.gruposCanais,
+        gruposFilmes: state.gruposFilmes);
     return listas;
   }
 }

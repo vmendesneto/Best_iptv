@@ -33,6 +33,7 @@ class LoginController extends StateNotifier<loginState> {
       Dio dio = Dio(options);
       try {
         response = await dio.get('http://cgold.me/$user/$pass');
+        print(response!.data);
         if (response!.statusCode == 200) {
           String m = "OK";
           state = loginState(
