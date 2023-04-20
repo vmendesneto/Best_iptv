@@ -3,7 +3,8 @@ import 'package:bestiptv/home/Movies/movies_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../login/login_screen.dart';
+import '../../login/login_screen.dart';
+import '../Series/series_screen.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -149,7 +150,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      print('Series linha 114');
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const SeriesPage()));
                     },
                     child: Container(
                       height: 150,

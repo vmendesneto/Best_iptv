@@ -16,6 +16,7 @@ class HomeState {
   List<Data>? shows;
   List<String>? gruposCanais;
   List<String>? gruposFilmes;
+  List<String>? gruposSeries;
 
   HomeState({
     this.lista,
@@ -29,6 +30,7 @@ class HomeState {
     this.shows,
     this.gruposCanais,
     this.gruposFilmes,
+    this.gruposSeries,
   });
 }
 
@@ -49,6 +51,7 @@ class HomeController extends StateNotifier<HomeState> {
     List<Data>? show;
     List<String> gCanais = [];
     List<String> gFilmes = [];
+    List<String> gSeries = [];
     List<Data>? listas = await dbHelper.getAllCanais();
 
     for (var i = 0; i < listas.length; i++) {
@@ -85,6 +88,15 @@ class HomeController extends StateNotifier<HomeState> {
       } else if (listas[i].grouptitle!.toLowerCase().contains("series")) {
         if (serie != null) {
           serie.add(listas[i]);
+          var contain = gSeries
+              .where((element) => element == listas[i].grouptitle.toString());
+          if (contain.isEmpty) {
+            gSeries.add(listas[i].grouptitle.toString());
+            gSeries.sort((a, b) => a
+                .toLowerCase()
+                .toString()
+                .compareTo(b.toLowerCase().toString()));
+          }
         } else {
           serie = [listas[i]];
         }
@@ -137,7 +149,8 @@ class HomeController extends StateNotifier<HomeState> {
         shows: show,
         series: serie,
         gruposCanais: gCanais,
-        gruposFilmes: gFilmes);
+        gruposFilmes: gFilmes,
+        gruposSeries: gSeries);
     //print(state.canais);
     //return listas;
   }
@@ -155,7 +168,8 @@ class HomeController extends StateNotifier<HomeState> {
         shows: state.shows,
         series: state.series,
         gruposCanais: state.gruposCanais,
-        gruposFilmes: state.gruposFilmes);
+        gruposFilmes: state.gruposFilmes,
+        gruposSeries: state.gruposSeries);
     return listas;
   }
 }

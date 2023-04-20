@@ -23,7 +23,6 @@ class LoginController extends StateNotifier<loginState> {
   Future login() async {
     String? user = state.user;
     String? pass = state.pass;
-
     if (user != null && pass != null) {
       BaseOptions options = BaseOptions(
         baseUrl: 'http://cgold.me/',

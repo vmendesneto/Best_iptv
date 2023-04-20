@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:bestiptv/providers/home_provider.dart';
 
-import '../home/home.dart';
+import '../home/screen/home.dart';
 
 class Transition extends ConsumerStatefulWidget {
   const Transition({Key? key}) : super(key: key);
